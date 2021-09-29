@@ -9,13 +9,13 @@ FrenetHyperparameters frenet_path_hp = {
     15.0, //max_curvature
     5.0, //max_road_width_l (float): maximum road width to the left [m]
     5.0, //max_road_width_r (float): maximum road width to the right [m]
-    0.2, //d_road_w (float): road width sampling discretization [m]
+    0.4, //d_road_w (float): road width sampling discretization [m]
     0.2, //dt(float): road width sampling discretization [m]
     15.0, //maxt (float): max prediction horizon [s]
-    10.0, //mint (float): min prediction horizon [s]
+    5.0, //mint (float): min prediction horizon [s]
     0.4, //d_t_s (float): target speed sampling discretization [m/s]
     1.0, //n_s_sample (float): sampling number of target speed
-    0.3, //obstacle_clearance (float): obstacle radius [m]
+    0.0, //obstacle_clearance (float): obstacle radius [m]
     1.0, //kd (float): positional deviation cost
     0.1, //kv (float): velocity cost
     0.1, //ka (float): acceleration cost
@@ -102,7 +102,7 @@ void FrenetOptimalTrajectory::FrenetInitialConditionsCallback(const frenet_local
             c_d,//-1.35277168
             c_dd, //-1.86
             0.0,
-            msg.cur_speed, // target_speedllx
+            5.0, // target_speedllx
             no
         };
         fot_ic = &tmp;
@@ -319,9 +319,9 @@ void FrenetOptimalTrajectory::calc_frenet_paths(int start_di_index,
             fp = new FrenetPath(fot_hp);
             QuinticPolynomial lat_qp = QuinticPolynomial(
                 fot_ic->c_d, fot_ic->c_d_d, fot_ic->c_d_dd, di, 0.0, 0.0, ti);
-            double tmp = lat_qp.calc_point(fot_hp->maxt);
+            double tmp = lat_qp.calc_point(fot_hp->mint);
 
-            if (tmp <  -1 || tmp > 5)
+            if (tmp <  -1 || tmp > 10)
                 break;
 
             // construct frenet path
