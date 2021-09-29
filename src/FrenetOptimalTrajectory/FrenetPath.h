@@ -59,6 +59,8 @@ public:
     // final cost
     double cf = 0.0;
 
+    double tmp = 0.0;
+
     FrenetPath(FrenetHyperparameters *fot_hp_);
     bool to_global_path(CubicSpline2D* csp);
     bool is_valid_path(const vector<Obstacle *> obstacles);
