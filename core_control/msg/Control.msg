@@ -1,3 +1,0 @@
-Can can
-int16 steer_command
-float64 acceleration_command

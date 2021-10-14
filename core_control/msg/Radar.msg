@@ -1,5 +1,0 @@
-Can can
-int32 object_state
-float64 object_lateral_pos
-float64 object_distance  
-float64 object_relative_speed
