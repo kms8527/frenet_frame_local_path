@@ -235,7 +235,7 @@ void FrenetOptimalTrajectory::FrenetInitialConditionsCallback(const frenet_local
 
             pubFrenetPath();
 //             visualizePath();
-            visualizePath(frenet_paths);
+//            visualizePath(frenet_paths);
 
 //                if (fp->s[0]<s)
 //                    fprintf(stderr,"%.1lf , bfp_idx : %d \n",fp->s[0], bfp_idx);
