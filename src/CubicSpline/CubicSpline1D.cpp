@@ -93,8 +93,7 @@ void CubicSpline1D::matrix_a(vector<double> &deltas, MatrixXd &result) {
 // Create the 1st derivative vector b used in spline construction
 void CubicSpline1D::vector_b(vector<double> &deltas, VectorXd &result) {
     for (int i = 0; i < nx - 2; i++) {
-        result(i + 1) = 3.0 * (a[i + 2] - a[i + 1]) / deltas[i + 1] - 3.0 *
-                (a[i + 1] - a[i]) / deltas[i];
+        result(i + 1) = 3.0 * ((a[i + 2] - a[i + 1]) / deltas[i + 1] - (a[i + 1] - a[i]) / deltas[i]);
     }
 }
 

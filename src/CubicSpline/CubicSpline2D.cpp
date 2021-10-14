@@ -16,7 +16,7 @@ CubicSpline2D::CubicSpline2D() = default;
 CubicSpline2D::CubicSpline2D(const vector<frenet_local_path::waypoint> &global_path) {
 
     vector<vector<double>> filtered_points = remove_collinear_points(global_path);
-    calc_s(filtered_points[0], filtered_points[1]);
+    calc_s(filtered_points[0], filtered_points[1]); // filtered_points[0] : filtered_global_path's x , filtered_points[1] : filtered_global_path's y
     sx = CubicSpline1D(s, filtered_points[0]);
     sy = CubicSpline1D(s, filtered_points[1]);
 }

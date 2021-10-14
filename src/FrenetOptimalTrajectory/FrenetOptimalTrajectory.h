@@ -26,8 +26,10 @@
 #include <mutex>
 #include <vector>
 #include <ros/ros.h>
+#include "frenet_local_path/frenet_obstacle.h"
 #include "frenet_local_path/frenet_input.h"
 #include "frenet_local_path/waypoint.h"
+#include "frenet_local_path/frenet_output.h"
 #include "pcl/PCLPointCloud2.h"
 
 #include "src/Polynomials/QuarticPolynomial.h"
@@ -41,7 +43,11 @@
 
 #include <sensor_msgs/PointCloud2.h>
 #include <pcl_conversions/pcl_conversions.h>
+//#include <pcl/point_cloud.h>
+//#include <pcl/point_types.h>
+//#include "pcl_ros/point_cloud.h"
 
+#include "geometry_msgs/Point.h"
 #include "tf2/utils.h"
 
 using namespace std;
@@ -53,19 +59,22 @@ class FrenetOptimalTrajectory {
 private:
     ros::Subscriber condition_sub;
     ros::Publisher frenet_path_pub;
+    ros::Publisher result_pub;
+    ros::Publisher pub_path_global;
     FrenetInitialConditions *fot_ic;
     FrenetHyperparameters *fot_hp;
-
+    bool flag ; //for debug
     mutex *mu;
     FrenetPath *best_frenet_path;
     CubicSpline2D *csp;
     vector<Obstacle *> obstacles;
-
+    char frenet_state;
 
 //    vector<double> x, y;
     vector<double> llx, lly, urx,ury; // obstacle lower left x , lower left y , upper right x, upper right y
+    vector<vector<geometry_msgs::Point>> obstacles_points;
     vector<frenet_local_path::waypoint> global_path;
-
+    vector<frenet_local_path::waypoint> raw_global_path;
     vector<FrenetPath *> frenet_paths;
     void calc_frenet_paths(int start_di_index, int end_di_index,
                            bool multithreaded);
@@ -76,11 +85,15 @@ public:
     ~FrenetOptimalTrajectory();
     FrenetPath *getBestPath();
     void setObstacles();
-    void addObstacle(Vector2f first_point, Vector2f second_point); // first_point = obstacle's left_bottom_point[x,y] second_point = right_upper_point[x,y]
+    void addObstacle(Vector2f first_point, Vector2f second_point, int i ); // first_point = obstacle's left_bottom_point[x,y] second_point = right_upper_point[x,y]
     void FrenetInitialConditionsCallback(const frenet_local_path::frenet_input &msg);
     void visualizePath();
-    void visualizePath(const FrenetPath* frenet_path);
+    void visualizePath(const FrenetPath * frenet_path);
+    void visualizePath(const vector<FrenetPath *> frenet_paths);
     void resetParam();
+    void pubFrenetPath();
+    bool isSamePath(vector<frenet_local_path::waypoint> &global_path, const vector<frenet_local_path::waypoint> &msg_path);
+    void pubglobalpath();
 };
 
 #endif // FRENET_OPTIMAL_TRAJECTORY_FRENET_OPTIMAL_TRAJECTORY_H

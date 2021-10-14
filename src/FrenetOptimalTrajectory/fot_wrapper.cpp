@@ -122,10 +122,10 @@
 //        // get initial conditions in frenet frame
 //        initial_conditions[0] = s; // current longitudinal position s
 //        initial_conditions[1] = forward_speed; // speed [m/s]
-//        // lateral position c_d [m]
-//        initial_conditions[2] = copysign(distance, dot(tvec, bvec));
-//        // lateral speed c_d_d [m/s]
-//        initial_conditions[3] = -forward_speed * dot(tvec, fvec);
+
+//        initial_conditions[2] = copysign(distance, dot(tvec, bvec));  // lateral position c_d [m]
+
+//        initial_conditions[3] = -forward_speed * dot(tvec, fvec);   // lateral speed c_d_d [m/s]
 //        initial_conditions[4] = 0.0; // lateral acceleration c_d_dd [m/s^2]
 //        // TODO: add lateral acceleration when CARLA 9.7 is patched (IMU)
 

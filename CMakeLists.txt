@@ -29,6 +29,8 @@ add_message_files(
     FILES
     waypoint.msg
     frenet_input.msg
+    frenet_output.msg
+    frenet_obstacle.msg
  )
 generate_messages(
     DEPENDENCIES
