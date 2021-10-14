@@ -25,6 +25,7 @@ private:
     BT::NodeStatus checkPassAbleTrafficLight();
     BT::NodeStatus checkGlobalLaneChange();
     BT::NodeStatus checkLeftChange();
+    BT::NodeStatus checkRightChange();
     BT::NodeStatus checkExistPathGlobal();
     BT::NodeStatus checkStateLaneKeeping();
     BT::NodeStatus checkStateLaneChangeLeft();

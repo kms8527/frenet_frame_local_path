@@ -409,30 +409,6 @@ WayPointIndex LocalPath::findCurrPathIndex(const geometry_msgs::Pose &pose)
     return curr_idx;
 }
 
-void LocalPath::avoid_obstacle_path(PC_XYZI &path){
-    double min_dist = INFINITY;
-    double index;
-    pcl::PointXYZI start_point;
-
-    path.clear();
-    for(size_t i=0; i< frenet_path.size(); i++){
-        double dist = hypot(frenet_path[i].x-curr_pose.position.x, frenet_path[i].y-curr_pose.position.y);
-        if (dist< min_dist){
-            min_dist = dist;
-            index = i;
-        }
-    }
-
-    for(size_t i = index+1; i<frenet_path.size(); i++){
-        frenet_path.points[i].intensity = getLink(idx_curr_path).speed / 3.6;
-        path.push_back(frenet_path[i]);
-    }
-
-    if(frenet_state == 0)
-        frenet_state = 1;
-
-}
-
 PC_XYZI LocalPath::genGlobalFollowPath(const double dis_path)
 {
     is_exist_obstacle = false;
@@ -452,14 +428,8 @@ PC_XYZI LocalPath::genGlobalFollowPath(const double dis_path)
         {
             accum_dis += calcDistance(curr_idx, next_point_idx_daegue);
             pcl::PointXYZI p = convertXYZI(getWayPoint(next_point_idx_daegue));
-            if (is_exist_obstacle) || frenet_state ==1)
+            if (is_exist_obstacle)
             {
-//              //변경 예정  // 속도 프로파일 부분 볼것
-////            fprintf(stderr,"asdf : %lf", hypot(path[0].x-p.x,path[0].y-p.y));
-                if ((frenet_state == 1 || hypot(curr_pose.position.x-p.x, curr_pose.position.y-p.y)<15)){
-                    avoid_obstacle_path(path);
-                    return path;
-                }
                 p.intensity = 0;
                 path.points.push_back(p);
                 continue;
@@ -469,13 +439,8 @@ PC_XYZI LocalPath::genGlobalFollowPath(const double dis_path)
                 path.points.push_back(p);
             else
             {
-                if (msg_object.polygon.size() == 0)
+                if (msg_object.polygon.at(index_object).class_name == "irregular")
                     is_irr_same_link = true;
-                else
-                {
-                    if (msg_object.polygon.at(index_object).class_name == "irregular")
-                        is_irr_same_link = true;
-                }
                 is_exist_obstacle = true;
                 p.intensity = 0;
                 path.points.push_back(p);
@@ -737,7 +702,7 @@ WayPointIndex LocalPath::findSideLanePoint(const WayPointIndex &idx, const bool 
     double min_dis = DBL_MAX;
     if (!isValidIndex(side_lane_idx))
     {
-        fprintf(stderr, "not_exist_side_lane\n");
+        // fprintf(stderr, "not_exist_side_lane\n");
         WayPointIndex not_exist_side_lane;
         return not_exist_side_lane;
     }
@@ -1398,6 +1363,26 @@ bool LocalPath::tickCheckLeftChange()
     //     return true;
     // else
     //     return false;
+}
+bool LocalPath::tickCheckRightChange()
+{
+        // 차선변경하는 곳이 아닐 때
+    if (getPath(idx_curr_path).dst == -1)
+    {
+        // src와 현재 차선이 다르면 차선 복귀.
+        if (idx_curr_path.link < getPath(idx_curr_path).src)
+            return true;
+        else
+            return false;
+    }
+    else
+    {
+        // 차선변경해야하는 부분에서 차선변경
+        if (idx_curr_path.link < getPath(idx_curr_path).dst)
+            return true;
+        else
+            return false;
+    }
 }
 bool LocalPath::tickCheckEndLaneChange()
 {

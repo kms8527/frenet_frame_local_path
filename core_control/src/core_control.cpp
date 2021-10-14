@@ -34,9 +34,6 @@ CoreControl::CoreControl(ros::NodeHandle &node_handle) : nh(node_handle),
     sub_traffic_sign = nh.subscribe(kTopicTrafficInfo, 1, &CoreControl::callbackTrafficInfo, this);
     sub_state_mission_fsm = nh.subscribe(kTopicFsmMission, 1, &CoreControl::callbackStateMissionFsm, this);
 
-    //min seong frenet local path
-    pub_frenet_state = nh.advertise<core_map::frenet_input>(kTopicfrenetInput,1);
-    sub_frenet_path = nh.subscribe(kTopicfrenetpath, 1, &CoreControl::callbackfrenetpath, this);
     if (!is_simulation)
         //자동차 정보 pub
         pub_avante_data = nh.advertise<core_control::AvanteData>(kTopicAvanteData, 1);
@@ -99,71 +96,6 @@ CoreControl::CoreControl(ros::NodeHandle &node_handle) : nh(node_handle),
     is_pub_mission_state = false;
 }
 
-void CoreControl::get_frenet_path()
-{
-    core_map::frenet_input msg;
-    msg.cur_pos = gps_pose;
-
-//    msg.obs_pos = obstacle_morai;
-
-    for(int i=0; i<obstacle_morai.size(); i++){
-        core_map::frenet_obstacle tmp;
-        for(int j =0; j < obstacle_morai[i].size(); j++)
-        {
-        //[1] : upper right point // [3] : lower left point
-//        msg.obs_pos.push_back(obstacle_morai[i]);
-//          msg.obs_pos.push_back(obstacle_morai[i])
-            tmp.Points.push_back(obstacle_morai[i][j]);
-        }
-        msg.obs_pos.push_back(tmp);
-    }
-    WayPointIndex idx = local_path.getIndex();
-
-    msg.cur_speed = vehicle_data.getSpeedDouble() / 3.6; // m/s
-    msg.target_speed = vehicle_data.getSpeedDouble() / 3.6;
-//    for(int i=0; i<msg_path_global.pathAry.size(); i++){ //need to minimize global path array
-//        for(int j=0; j<msg_path_global.pathAry[i].links.size();j++){
-//            for(int k=0; k<msg_path_global.pathAry[i].links[j].waypointAry.size(); k++){
-//                msg.waypointAry.push_back(msg_path_global.pathAry[i].links[j].waypointAry[k]);
-//            }
-//        }
-//    }
-
-    if (path_local.size() == 0)
-        std::cout<< "0" << std::endl;
-    for(size_t i =0; i<path_local.size(); i++){
-        core_map::waypoint waypoint;
-        waypoint.x = path_local[i].x;
-        waypoint.y = path_local[i].y;
-        msg.waypointAry.push_back(waypoint);
-    }
-
-    msg.frenet_state = local_path.frenet_state;
-//    if (local_path.path_local.size() ==0)
-//        msg.frenet_state = 0;
-    pub_frenet_state.publish(msg);
-}
-
-void CoreControl::callbackfrenetpath(const core_map::frenet_output &msg){
-
-    PC_XYZI frenet_path;
-    pcl::fromROSMsg(msg.frenet_path, frenet_path); //roi
-//    pcl::PCLPointCloud2 cloud_ROI;
-//    for (size_t i = 0; i< msg.frenet_path.points.size(); i++){
-//        pcl::PointXYZI p;
-//        p.x = msg.frenet_path.points[i].x;
-//        p.y = msg.frenet_path.points[i].y;
-//        p.z = 0;
-//        p.intensity = 0;
-//        frenet_path.push_back(p);
-//    }
-
-//    frenet_path = msg;
-    local_path.setFrenetPath(frenet_path);
-    if (local_path.frenet_state == 1 && msg.frenet_state ==0)
-        local_path.frenet_state = 0; // 0 :initial  , 1: changing
-}
-
 CoreControl::~CoreControl()
 {
 }
@@ -180,7 +112,7 @@ void CoreControl::threadControl()
             std::unique_lock<std::mutex> lock_can(mutex_can);
             vehicle_data_tmp = vehicle_data_can;
         }
-        fprintf(stderr, "vehicle_data time: %lf", (ros::Time::now() - start).toSec());
+        // fprintf(stderr, "vehicle_data time: %lf", (ros::Time::now() - start).toSec());
 
         start = ros::Time::now();
         geometry_msgs::Pose control_pose;
@@ -188,7 +120,7 @@ void CoreControl::threadControl()
             std::unique_lock<std::mutex> lock_gps(mutex_gps_pose);
             control_pose = gps_pose;
         }
-        fprintf(stderr, "gps_pose time: %lf", (ros::Time::now() - start).toSec());
+        // fprintf(stderr, "gps_pose time: %lf", (ros::Time::now() - start).toSec());
 
         start = ros::Time::now();
         {
@@ -197,8 +129,7 @@ void CoreControl::threadControl()
             control.setCanData(vehicle_data_tmp);
             control.RunOnce();
         }
-        fprintf(stderr, "control time: %lf\n", (ros::Time::now() - start).toSec());
-
+        // fprintf(stderr, "control time: %lf\n", (ros::Time::now() - start).toSec());
         r.sleep();
     }
 }
@@ -814,6 +745,10 @@ bool CoreControl::btCheckLeftChange()
 {
     return local_path.tickCheckLeftChange();
 }
+bool CoreControl::btCheckRightChange()
+{
+    return local_path.tickCheckRightChange();
+}
 bool CoreControl::btCheckExistPathGlobal()
 {
     if (msg_path_global.pathAry.empty())
@@ -1317,9 +1252,6 @@ bool CoreControl::btActionGenPathLaneChangeRight()
 }
 bool CoreControl::btActionGenPathLaneKeeping()
 {
-//    local_path.clearFrenetPath();
-    get_frenet_path();
-    fprintf(stderr,"pub frenet \n");
     if (local_path.genPathLaneKeeping())
     {
         path_lane_keeping = local_path.getPathLaneKeeping();

@@ -51,13 +51,6 @@ enum class MsgType : char
     DAEGUE_MAP
 };
 
-enum class Frenet : char
-{
-    frenet_initial =0,
-    frenet_changing,
-    frenet_complete
-};
-
 enum class StateCollision : char
 {
     none = 0,
@@ -100,9 +93,6 @@ private:
     geometry_msgs::Pose start_pose, goal_pose;
     // km/h
     double vehicle_speed;
-    //minseong
-    PC_XYZI frenet_path;
-
 
     nav_msgs::OccupancyGrid occ_map;
 
@@ -189,7 +179,6 @@ private:
     std::vector<UnprotectedLink> unprotected_right;
 
 public:
-    char frenet_state = 0;
     LocalPath();
     ~LocalPath();
 
@@ -209,7 +198,6 @@ public:
     bool requestNewPath;
     void genIntersectionStopPath(const double dis);
     bool is_exist_obstacle;
-    bool frenet_flag;
 
     void resetIndex() { idx_curr_path = WayPointIndex(); }
     void setPose(const geometry_msgs::Pose &_pose) { curr_pose = _pose; }
@@ -220,8 +208,6 @@ public:
     void setObject(polygon_msgs::polygonArray object) { msg_object = object; }
     void setPathBehind(std::vector<core_map::a3_link> &path) { path_behind = path; }
     void const setPathState(const StatePath state) { state_path = state; }
-    void setFrenetPath(const PC_XYZI _frenet_path){frenet_path = _frenet_path;}
-    void clearFrenetPath(){frenet_path.clear();}
     StatePath const &getPathState() { return state_path; }
     LaneChangeState const &getLaneChangeState() { return lane_change_state; }
     std::string const &getSideLaneTonode() { return getLink(idx_lane_change_mid).tonode; }
@@ -234,7 +220,7 @@ public:
     std::vector<UnprotectedLink> const &getUnprotectedRight() { return unprotected_right; }
     UnprotectedLink const getUnprotectedLink();
     bool isUnprotectedIntersection(std::string linkid);
-    void avoid_obstacle_path(PC_XYZI &path);
+
     std::string const getTonodeLeftLane()
     {
         WayPointIndex wp = findSideLanePoint(idx_curr_path, true);
@@ -317,6 +303,8 @@ public:
     bool tickCheckGlobalLaneChange();
     // 왼쪽으로 차선변경 해야하는가?
     bool tickCheckLeftChange();
+    // 오른쪽으로 차선변경 해야하는가?
+    bool tickCheckRightChange();
     // 차선변경 완료됐나?
     bool tickCheckEndLaneChange();
     // local path와 현재위치 사이가 먼가?

@@ -53,10 +53,10 @@ cv::Mat detection_imgMap(double x, double y, double yaw)
     bool is_daegue = false;
     std::string name_map;
     if (is_daegue)
-        name_map = "/home/a/k_city_ws/src/core_control/map/ImageMap(v3-expand).png";
+        name_map = "/home/a/lc_ws/src/core_control/map/ImageMap(v3-expand).png";
     else
-        name_map = "/home/a/k_city_ws/src/core_control/map/k_city_thres.png";
-    // static cv::Mat map_origin = (cv::imread("/home/a/k_city_ws/src/core_control/map/ImageMap(final)_reverse.png", cv::IMREAD_GRAYSCALE));
+        name_map = "/home/a/lc_ws/src/core_control/map/k_city_thres.png";
+    // static cv::Mat map_origin = (cv::imread("/home/a/lc_ws/src/core_control/map/ImageMap(final)_reverse.png", cv::IMREAD_GRAYSCALE));
     static cv::Mat map_origin = (cv::imread(name_map, cv::IMREAD_GRAYSCALE));
     //    for(int row = 0; row < map_origin.rows; row++)
     //    {
@@ -68,7 +68,7 @@ cv::Mat detection_imgMap(double x, double y, double yaw)
     //                map_origin.at<uchar>(row, col) = 0x00;
     //        }
     //    }
-    //    cv::imwrite("/home/a/k_city_ws/src/core_control/map/ImageMap(final)_reverse.png",map_origin);
+    //    cv::imwrite("/home/a/lc_ws/src/core_control/map/ImageMap(final)_reverse.png",map_origin);
     //  static bool a = false;
     //  if(!a)
     //  {
@@ -81,7 +81,7 @@ cv::Mat detection_imgMap(double x, double y, double yaw)
     //     //         map_origin.data[i] = 0;
     //     // }
 
-    //      cv::imwrite("/home/a/k_city_ws/src/core_control/map/ImageMap(v3-expand)_thres.png",map_origin);
+    //      cv::imwrite("/home/a/lc_ws/src/core_control/map/ImageMap(v3-expand)_thres.png",map_origin);
     //      a = true;
     //  }
     double max_x = 80;

@@ -252,7 +252,7 @@ double Control::calSteer(const double curr_speed)
     return target_steer;
 }
 
-double Control::purePersuit(double curr_x, double curr_y, double curr_yaw, double curr_speed, pcl::PointCloud<pcl::PointXYZI> &     local_path)
+double Control::purePersuit(double curr_x, double curr_y, double curr_yaw, double curr_speed, pcl::PointCloud<pcl::PointXYZI> &local_path)
 {
     //purePersuit 목표점
     double look_ahead_x = 0.0,
