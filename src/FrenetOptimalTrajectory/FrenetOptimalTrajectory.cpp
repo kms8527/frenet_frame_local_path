@@ -24,7 +24,7 @@ FrenetHyperparameters frenet_path_hp = {
     1.0, //ko (float): dist to obstacle cost
     0.1, //klat (float): lateral cost
     1.0, //klong (float): lateral cost
-    0    //number of thread
+    10    //number of thread
 };
 
 // Compute the frenet optimal trajectory
@@ -235,7 +235,7 @@ void FrenetOptimalTrajectory::FrenetInitialConditionsCallback(const frenet_local
 
             pubFrenetPath();
 //             visualizePath();
-//             visualizePath(frenet_paths);
+            visualizePath(frenet_paths);
 
 //                if (fp->s[0]<s)
 //                    fprintf(stderr,"%.1lf , bfp_idx : %d \n",fp->s[0], bfp_idx);

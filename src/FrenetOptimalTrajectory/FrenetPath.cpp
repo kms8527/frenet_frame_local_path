@@ -4,7 +4,7 @@
 #include <algorithm>
 
 const float COLLISION_CHECK_THRESHOLD = 8; // don't check unless within 6m
-const float SAFETY_DISTANCE_THRESHOLD = 4;
+const float SAFETY_DISTANCE_THRESHOLD = 1.7;
 FrenetPath::FrenetPath(FrenetHyperparameters *fot_hp_) {
     fot_hp = fot_hp_;
 }
@@ -117,7 +117,11 @@ bool FrenetPath::is_collision(const vector<Obstacle *> obstacles) {
             double closest = *min_element(dis.begin(), dis.end());
             // only check for collision if one corner of bounding box is
             // within COLLISION_CHECK_THRESHOLD of waypoint
-            if (closest <= COLLISION_CHECK_THRESHOLD && closest >=SAFETY_DISTANCE_THRESHOLD) {
+            if (closest <=SAFETY_DISTANCE_THRESHOLD && i<=2)
+                return false;
+            else if (closest <=SAFETY_DISTANCE_THRESHOLD) // i>2 && closest>safety_distance case
+                return true;
+            else if (closest <= COLLISION_CHECK_THRESHOLD) {
                 double xp = x[i];
                 double yp = y[i];
                 double yawp = yaw[i];
@@ -130,7 +134,10 @@ bool FrenetPath::is_collision(const vector<Obstacle *> obstacles) {
                     p2.x() = car_outline[(i+1) % car_outline.size()][0];
                     p2.y() = car_outline[(i+1) % car_outline.size()][1];
                     if (obstacle->isSegmentInObstacle(p1, p2)) {
-                        return true;
+                        if (i<=2)
+                            continue;
+                        else
+                            return true;
                     }
                     // TODO (@fangedward): containment check is not implemented
                     // this is necessary when there is a obstacle that can fully
@@ -138,10 +145,6 @@ bool FrenetPath::is_collision(const vector<Obstacle *> obstacles) {
                     // form a line segment that intersects the obstacle
                 }
             }
-            else if (closest <= SAFETY_DISTANCE_THRESHOLD){
-                return false;
-            }
-
 
         }
 

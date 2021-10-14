@@ -1,6 +1,0 @@
-<?xml version="1.0"?>
-<launch>
-  <rosparam command="load" file="$(find core_control)/config/setting.yaml" />
-
-  <node pkg="core_control" type="core_control_node" name="core_control_node"  output="screen" />
-</launch>

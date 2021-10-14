@@ -10,7 +10,7 @@ using namespace std;
 
 // Lincoln MKZ configuration
 const double VEHICLE_LENGTH = 4.93;
-const double VEHICLE_WIDTH = 2.5;
+const double VEHICLE_WIDTH = 3.5;
 
 class Car {
 public:
