@@ -1,0 +1,9 @@
+waypoint[] waypointAry
+string linkid
+string fromnode
+string tonode
+int16 roadtype
+int16 speed
+int16 lane
+int16 code
+float64 cost

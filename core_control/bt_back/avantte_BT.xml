@@ -1,0 +1,190 @@
+<?xml version="1.0"?>
+<root main_tree_to_execute="BehaviorTree">
+    <!-- ////////// -->
+    <BehaviorTree ID="BehaviorTree">
+        <Fallback name="Core_seq">
+            <Sequence name="">
+                <Condition ID="checkMissionWait"/>
+                <Action ID="stop"/>
+            </Sequence>
+            <Sequence name="">
+                <Sequence name="">
+                    <Condition ID="checkExistPathGlobal"/>
+                    <Action ID="init"/>
+                    <Fallback name="">
+                        <Sequence name="">
+                            <Condition ID="checkGlobalLaneChange"/>
+                            <Fallback name="">
+                                <Sequence name="">
+                                    <Condition ID="checkLeftChange"/>
+                                    <Fallback name="">
+                                        <Condition ID="checkGenPathLaneChange"/>
+                                        <Action ID="genPathLaneChangeLeft"/>
+                                    </Fallback>
+                                    <Fallback name="">
+                                        <Sequence name="">
+                                            <Condition ID="checkCollision"/>
+                                            <Action ID="keepLane"/>
+                                        </Sequence>
+                                        <Action ID="laneChangeLeft"/>
+                                    </Fallback>
+                                </Sequence>
+                                <Sequence name="">
+                                    <Fallback name="">
+                                        <Condition ID="checkGenPathLaneChange"/>
+                                        <Action ID="genPathLaneChangeRight"/>
+                                    </Fallback>
+                                    <Fallback name="">
+                                        <Sequence name="">
+                                            <Condition ID="checkCollision"/>
+                                            <Action ID="keepLane"/>
+                                        </Sequence>
+                                        <Action ID="laneChangeRight"/>
+                                    </Fallback>
+                                </Sequence>
+                            </Fallback>
+                        </Sequence>
+                        <Action ID="genGlobalFollowPath"/>
+                    </Fallback>
+                </Sequence>
+                <Fallback name="">
+                    <Sequence name="">
+                        <Condition ID="checkFrontObject"/>
+                        <Fallback name="">
+                            <Sequence name="">
+                                <Condition ID="checkIsGlobalFollow"/>
+                                <Fallback name="loc_check">
+                                    <Sequence name="">
+                                        <Condition ID="checkNearCorner"/>
+                                        <Action ID="acc"/>
+                                    </Sequence>
+                                    <Sequence name="">
+                                        <Condition ID="checkNearStopline"/>
+                                        <Action ID="acc"/>
+                                    </Sequence>
+                                    <Sequence name="">
+                                        <Condition ID="checkProfitKeeplane"/>
+                                        <Action ID="acc"/>
+                                    </Sequence>
+                                </Fallback>
+                            </Sequence>
+                            <Fallback name="lane_check">
+                                <Sequence name="">
+                                    <Condition ID="checkLaneChange"/>
+                                    <Fallback name="lane_check">
+                                        <Sequence name="">
+                                            <Condition ID="checkLeftchageAble"/>
+                                            <Fallback name="">
+                                                <Condition ID="checkGenPathLaneChange"/>
+                                                <Action ID="genPathLaneChangeLeft"/>
+                                            </Fallback>
+                                            <Fallback name="">
+                                                <Sequence name="">
+                                                    <Condition ID="checkCollision"/>
+                                                    <Action ID="keepLane"/>
+                                                </Sequence>
+                                                <Action ID="laneChangeLeft"/>
+                                            </Fallback>
+                                        </Sequence>
+                                        <Sequence name="">
+                                            <Fallback name="">
+                                                <Condition ID="checkGenPathLaneChange"/>
+                                                <Action ID="genPathLaneChangeRight"/>
+                                            </Fallback>
+                                            <Fallback name="">
+                                                <Sequence name="">
+                                                    <Condition ID="checkCollision"/>
+                                                    <Action ID="keepLane"/>
+                                                </Sequence>
+                                                <Action ID="laneChangeRight"/>
+                                            </Fallback>
+                                        </Sequence>
+                                    </Fallback>
+                                </Sequence>
+                                <Sequence name="Local_path">
+                                    <Fallback name="">
+                                        <Condition ID="checkEmptyLocal"/>
+                                        <Sequence name="Gen_Local">
+                                            <Action ID="stop"/>
+                                            <Action ID="genLocalPath"/>
+                                            <Action ID="setStartLocal"/>
+                                        </Sequence>
+                                    </Fallback>
+                                    <Fallback name="local_check">
+                                        <Sequence name="">
+                                            <Condition ID="checkFinishLocal"/>
+                                            <Action ID="setFinishLocal"/>
+                                        </Sequence>
+                                        <Sequence name="">
+                                            <Condition ID="checkCollision"/>
+                                            <Action ID="stop"/>
+                                            <Action ID="genLocalPath"/>
+                                        </Sequence>
+                                        <Action ID="localPathfollow"/>
+                                    </Fallback>
+                                </Sequence>
+                            </Fallback>
+                        </Fallback>
+                    </Sequence>
+                    <Sequence name="">
+                        <Condition ID="checkNearStopline"/>
+                        <Fallback name="">
+                            <Sequence name="">
+                                <Condition ID="checkPassAble"/>
+                                <Sequence name="">
+                                    <Sequence name="">
+                                        <Condition ID="checkCollision"/>
+                                        <Action ID="stop"/>
+                                    </Sequence>
+                                    <Action ID="drive"/>
+                                </Sequence>
+                            </Sequence>
+                            <Action ID="stop"/>
+                        </Fallback>
+                    </Sequence>
+                    <Action ID="drive"/>
+                </Fallback>
+                <Action ID="setPath"/>
+            </Sequence>
+        </Fallback>
+    </BehaviorTree>
+    <!-- ////////// -->
+    <TreeNodesModel>
+        <Action ID="acc"/>
+        <Condition ID="checkCollision"/>
+        <Condition ID="checkEmptyLocal"/>
+        <Condition ID="checkExistPathGlobal"/>
+        <Condition ID="checkFinishLocal"/>
+        <Condition ID="checkFrontObject"/>
+        <Condition ID="checkGenPathLaneChange"/>
+        <Condition ID="checkGlobalLaneChange"/>
+        <Condition ID="checkInitPose"/>
+        <Condition ID="checkIsGlobalFollow"/>
+        <Condition ID="checkLaneChange"/>
+        <Condition ID="checkLeftChange"/>
+        <Condition ID="checkLeftchageAble"/>
+        <Condition ID="checkMissionWait"/>
+        <Condition ID="checkNearCorner"/>
+        <Condition ID="checkNearStopline"/>
+        <Condition ID="checkPassAble"/>
+        <Condition ID="checkProfitKeeplane"/>
+        <Action ID="drive"/>
+        <Action ID="genGlobalFollowPath"/>
+        <Action ID="genLocalPath"/>
+        <Action ID="genPathLaneChangeLeft"/>
+        <Action ID="genPathLaneChangeRight"/>
+        <Action ID="init"/>
+        <Action ID="keepLane"/>
+        <Action ID="laneChangeLeft"/>
+        <Action ID="laneChangeRight"/>
+        <Action ID="localPathFollow"/>
+        <Action ID="localPathfollow"/>
+        <Action ID="setFinishLocal"/>
+        <Action ID="setPath"/>
+        <Action ID="setStartLocal"/>
+        <Action ID="stop"/>
+        <SubTree ID="treeGenGlobalFollowPath"/>
+    </TreeNodesModel>
+    <!-- ////////// -->
+</root>
+

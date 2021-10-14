@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="real_pos" value="3" />        <!-- 실제 대회용 -->
+
+  <!-- 위의 변수중에서 골라서 사용하면 됨 -->
+  <param name="/run_type" value="$(arg real_pos)" />
+  <!-- V2X Call 선택하려면 true 선택 안하려면 false -->
+  <param name="/run_opt" value="true" />  
+  <!-- HDMAP 폴더 path -->
+  <param name="/hdmap_path" value="$(find core_map)/HDMAP" />
+
+  <node pkg="core_map" type="core_map_node" name="core_map_node"  output="screen" />
+</launch>

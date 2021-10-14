@@ -1,0 +1,9 @@
+point[] pointAry
+string l_linkid
+string r_linkid
+string lanetype
+int16 lanecode
+int16 barrier
+string lno
+int16 code
+string hdufid

@@ -1,0 +1,17 @@
+Can can
+bool acc_enable_status
+uint8 acc_control_board_status
+uint8 acc_control_status
+bool acc_user_can_err
+bool acc_vehicle_err
+bool acc_err
+bool aeb_active
+uint8 vehicle_speed
+bool turn_left
+bool turn_rigt
+bool harzard
+uint8 gear_select
+uint8 bsd_left
+uint8 bsd_right
+float64 long_accel
+uint8 acc_alive_count

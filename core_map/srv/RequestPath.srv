@@ -1,0 +1,6 @@
+point src
+point dst
+float64 currSpeed
+int8 changeLane
+---
+global_path path
